@@ -24,9 +24,13 @@ public class CategoryService {
     @Autowired
     private CategoryRepository repo;
 
+    //Cambiamos la funcion para que retorne un page de dto
     public Page<CategoryDTO> getAllCategories(int page, int size) {
+        //Crea el objeto pageable que el repositoy necesita
         Pageable pageable = PageRequest.of(page, size);
+        //Manda la solicitud con el pageable
         Page<CategoryEntity> pageEntity = repo.findAll(pageable);
+        //Retorna un page con los datos convertidos a entity
         return pageEntity.map(this::convertirADTO);
     }
 

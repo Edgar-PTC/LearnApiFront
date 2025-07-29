@@ -28,21 +28,30 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping("/getDataCategory")
+    //Cambiamos a RequestEntity para que use los request, ademas se pone page y dto
     private ResponseEntity<Page<CategoryDTO>> getData(
+            //Determinamos los valores por defecto de la paginacion
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size){
+        //Si los registro son mayores a 0 o son menores a 50
         if (size <= 0 || size > 50){
+            //Mandamos un error para que el usuario no pueda pedir mas de 50 valores a la vez para que asi no trone la API
             ResponseEntity.badRequest().body(Map.of(
                     "status", "El tamaño de la página debe estar entre 1 y 50"
             ));
+            //Manda un null al usuario ya que no va a buscar nada
             return ResponseEntity.ok(null);
         }
-        org.springframework.data.domain.Page<CategoryDTO> categories = service.getAllCategories(page, size);
+        //Crea el objeto categories y manda a llamar a la funcion del service, mandando los datos que se usaran en el pageable
+        Page<CategoryDTO> categories = service.getAllCategories(page, size);
+        //Valida si el categories viene null
         if (categories == null){
+            //Manda un error que avisa que no hay registros
             ResponseEntity.badRequest().body(Map.of(
                     "status", "Error al obtener los datos"
             ));
         }
+        //Regresa el page con los datos encontrados y manda un mensaje de ok
         return ResponseEntity.ok(categories);
     }
 
